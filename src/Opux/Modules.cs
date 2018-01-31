@@ -356,6 +356,42 @@ namespace Opux
         /// 
         /// </summary>
         /// <returns></returns>
+        [Command("ts", RunMode = RunMode.Async), Summary("Activates Teamspeak check")]
+        public async Task Ts()
+        {
+            try
+            {
+                await Functions.TS_Check(Context);
+            }
+            catch (Exception ex)
+            {
+                await Functions.Client_Log(new Discord.LogMessage(Discord.LogSeverity.Error, "TeamSpeak", ex.Message, ex));
+                await Task.FromException(ex);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Command("ts reset", RunMode = RunMode.Async), Summary("Activates Teamspeak check")]
+        public async Task TsReset()
+        {
+            try
+            {
+                await Functions.TS_Reset(Context);
+            }
+            catch (Exception ex)
+            {
+                await Functions.Client_Log(new Discord.LogMessage(Discord.LogSeverity.Error, "TeamSpeak", ex.Message, ex));
+                await Task.FromException(ex);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [Command("dupes", RunMode = RunMode.Async), Summary("Deletes Duplicate Discord ID's from the MYSQL database")]
         [CheckForRole]
         public async Task Dupes()
@@ -368,6 +404,25 @@ namespace Opux
             catch (Exception ex)
             {
                 await Functions.Client_Log(new Discord.LogMessage(Discord.LogSeverity.Error, "Modules", ex.Message, ex));
+                await Task.FromException(ex);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Command("authmaint", RunMode = RunMode.Async), Summary("Activates Teamspeak check")]
+        [CheckForRole]
+        public async Task AuthMaint()
+        {
+            try
+            {
+                await Functions.AuthMaint(Context);
+            }
+            catch (Exception ex)
+            {
+                await Functions.Client_Log(new Discord.LogMessage(Discord.LogSeverity.Error, "AuthMaint", ex.Message, ex));
                 await Task.FromException(ex);
             }
         }
