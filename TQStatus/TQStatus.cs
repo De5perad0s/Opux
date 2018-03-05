@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Commands;
 using ESIClient.Api;
+using ESIClient.Client;
+using ESIClient.Model;
 using Microsoft.Extensions.Configuration;
 using Opux2;
 using System;
@@ -17,6 +19,7 @@ namespace tqStatus
         static bool _FirstRunDone { get; set; }
         static bool _VIP { get; set; }
         static string _Version { get; set; }
+        static bool _Offline { get; set; }
         static DateTime _Starttime { get; set; }
 
         [Command("status", RunMode = RunMode.Async), Summary("Gets and displays the status of the EVE server")]
@@ -81,13 +84,45 @@ namespace tqStatus
 
                         var textchannel = Base.DiscordClient.GetGuild(guildid).GetTextChannel(channelid);
 
-                        var status = await this.status.GetStatusAsyncWithHttpInfo();
-                        if (status.StatusCode == 200 && Convert.ToInt16(status.Headers["X-Esi-Error-Limit-Remain"]) > 10)
+                        ApiResponse<GetStatusOk> status = null;
+
+                        try
+                        {
+                            status = await this.status.GetStatusAsyncWithHttpInfo();
+                        }
+                        catch (ApiException ex)
+                        {
+                            if (ex.ErrorCode == 502)
+                            {
+                                if ( _Offline != true )
+                                {
+                                    var builder = new EmbedBuilder()
+                                        .WithColor(new Color(0x00D000))
+                                        .WithAuthor(author =>
+                                        {
+                                            author
+                                                .WithName($"EVE Sever status changed");
+                                        })
+                                        .AddInlineField("Status", "Offline")
+                                        .AddInlineField("Players", "Offline");
+
+                                    builder.WithTimestamp(DateTime.UtcNow);
+
+                                    var embed = builder.Build();
+
+                                    await textchannel.SendMessageAsync($"", false, embed).ConfigureAwait(false);
+                                    _Offline = true;
+                                    _FirstRunDone = true;
+                                }
+                            }
+                        }
+                        if (status != null && status.StatusCode == 200 && Convert.ToInt16(status.Headers["X-Esi-Error-Limit-Remain"]) > 10)
                         {
                             if (_FirstRunDone)
                             {
                                 if (_VIP != (status.Data.Vip ?? false) || _Version != status.Data.ServerVersion || status.Data.StartTime > _Starttime.AddMinutes(1))
                                 {
+                                    _Offline = false;
                                     _VIP = status.Data.Vip ?? false;
                                     _Version = status.Data.ServerVersion;
                                     _Starttime = status.Data.StartTime ?? DateTime.MinValue;
@@ -123,17 +158,7 @@ namespace tqStatus
                         }
                         else
                         {
-                            var builder = new EmbedBuilder()
-                                .WithColor(new Color(0x00D000))
-                                .WithAuthor(author =>
-                                {
-                                    author
-                                        .WithName($"EVE Sever status changed");
-                                })
-                                .AddInlineField("Status", "Offline")
-                                .AddInlineField("Players", $"Offline");
 
-                            var embed = builder.Build();
                         }
                         lastRun = DateTime.UtcNow;
                         _Running = false;
