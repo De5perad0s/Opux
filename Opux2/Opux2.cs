@@ -108,7 +108,7 @@ namespace Opux2
                     }
 
                     Configuration = builder.Build();
-                    await mySql.MySqlCheck();
+                    await MySql.MySqlCheck();
                 }
                 catch (Exception ex)
                 {

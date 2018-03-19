@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Opux2
 {
-    public class mySql
+    public class MySql
     {
         public static async Task<IList<IDictionary<string, object>>> MysqlQuery(string query)
         {
