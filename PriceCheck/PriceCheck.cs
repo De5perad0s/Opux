@@ -16,31 +16,46 @@ namespace priceChecks
         [Command("pc", RunMode = RunMode.Async), Summary("Use !pc itemname to get the Global Price for the item")]
         public async Task Pc([Remainder] string x)
         {
-            await PriceCheck(null, x, Context);
+            if (await Functions.CheckPluginEnabled(Name))
+            {
+                await PriceCheck(null, x, Context);
+            }
         }
 
         [Command("jita", RunMode = RunMode.Async), Summary("Use !jita itemname to get the Jita Price for the item")]
         public async Task Jita([Remainder] string x)
         {
-            await PriceCheck("Jita", x, Context);
+            if (await Functions.CheckPluginEnabled(Name))
+            {
+                await PriceCheck("Jita", x, Context);
+            }
         }
 
         [Command("dodixie", RunMode = RunMode.Async), Summary("Use !dodixie itemname to get the Dodixie Price for the item")]
         public async Task Dodixie([Remainder] string x)
         {
-            await PriceCheck("Dodixie", x, Context);
+            if (await Functions.CheckPluginEnabled(Name))
+            {
+                await PriceCheck("Dodixie", x, Context);
+            }
         }
 
         [Command("rens", RunMode = RunMode.Async), Summary("Use !rens itemname to get the Rens Price for the item")]
         public async Task Rens([Remainder] string x)
         {
-            await PriceCheck("Rens", x, Context);
+            if (await Functions.CheckPluginEnabled(Name))
+            {
+                await PriceCheck("Rens", x, Context);
+            }
         }
 
         [Command("hek", RunMode = RunMode.Async), Summary("Use !hek itemname to get the Hek Price for the item")]
         public async Task Hek([Remainder] string x)
         {
-            await PriceCheck("Hek", x, Context);
+            if (await Functions.CheckPluginEnabled(Name))
+            {
+                await PriceCheck("Hek", x, Context);
+            }
         }
 
         public string Name => "PriceChecks";
@@ -53,6 +68,11 @@ namespace priceChecks
 
         public async Task OnLoad()
         {
+            if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM plugin_config WHERE name=\"{Name}\"")).Count == 0)
+            {
+                await Opux2.MySql.MysqlQuery($"INSERT INTO plugin_config (name, enabled) " +
+                    $"VALUES (\"{Name}\", 0)");
+            }
             await Base.Commands.AddModuleAsync(GetType());
             await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
         }

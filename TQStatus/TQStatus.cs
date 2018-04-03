@@ -14,13 +14,15 @@ namespace tqStatus
     {
         StatusApi status = new StatusApi();
 
-        static DateTime lastRun { get; set; }
+        static DateTime LastRun { get; set; }
+        public bool MySqlExists { get; private set; }
         static bool _Running { get; set; }
         static bool _FirstRunDone { get; set; }
         static bool _VIP { get; set; }
         static string _Version { get; set; }
         static bool _Offline { get; set; }
         static DateTime _Starttime { get; set; }
+        string table = "tqstatus";
 
         [Command("status", RunMode = RunMode.Async), Summary("Gets and displays the status of the EVE server")]
         public async Task Status()
@@ -42,7 +44,7 @@ namespace tqStatus
                     })
                     .AddInlineField("Players Online:", $"{Players}")
                     .AddInlineField("Version", $"{ServerVersion}")
-                    .AddInlineField("StartTime", $"{_Starttime}");
+                    .AddInlineField("StartTime", $"{StartTime}");
 
                 builder.WithTimestamp(DateTime.UtcNow);
 
@@ -62,7 +64,35 @@ namespace tqStatus
 
         public async Task OnLoad()
         {
-            await Base.Commands.AddModuleAsync(GetType());
+            if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM {table} LIMIT 1")) == null)
+            {
+                Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Creating {table} Table in MySql Database")).Wait();
+
+                var result = await Opux2.MySql.MysqlQuery($"CREATE TABLE {table} (id int(6) NOT NULL AUTO_INCREMENT, channelid bigint(20) unsigned NOT NULL, " +
+                    "guildid bigint(20) unsigned NOT NULL, UserId smallint(6) NOT NULL, APICode text NOT NULL, GroupID mediumint(9) NOT NULL, " +
+                    "fleetUpLastPostedOperation mediumint(9) NOT NULL, announce_post tinyint(4) NOT NULL, PRIMARY KEY (id), UNIQUE KEY (GroupID) ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+
+                if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM {table} LIMIT 1")) != null)
+                {
+                    Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, "Table Created")).Wait();
+                    MySqlExists = true;
+                    _Running = false;
+                    await Base.Commands.AddModuleAsync(GetType());
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
+                }
+                else
+                {
+                    Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, "Error Creating Table")).Wait();
+                }
+            }
+            else
+            {
+                MySqlExists = true;
+                _Running = false;
+                await Base.Commands.AddModuleAsync(GetType());
+                await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
+            }
+            //await Base.Commands.AddModuleAsync(GetType());
             await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
         }
 
@@ -70,7 +100,7 @@ namespace tqStatus
         {
             try
             {
-                if ( !_Running && DateTime.UtcNow > lastRun.AddSeconds(30))
+                if ( !_Running && DateTime.UtcNow > LastRun.AddSeconds(30))
                 {
                     _Running = true;
 
@@ -82,7 +112,17 @@ namespace tqStatus
                         UInt64.TryParse(channelRaw, out ulong channelid);
                         UInt64.TryParse(guildidRaw, out ulong guildid);
 
-                        var textchannel = Base.DiscordClient.GetGuild(guildid).GetTextChannel(channelid);
+                        var guild = Base.DiscordClient.GetGuild(guildid);
+
+                        if (guild == null)
+                            throw new Exception("GuildID Incorrect");
+
+                        var channel = guild.GetTextChannel(channelid);
+
+                        if (channel == null)
+                            throw new Exception("ChannelID Incorrect");
+
+                        var textchannel = channel;
 
                         ApiResponse<GetStatusOk> status = null;
 
@@ -160,7 +200,7 @@ namespace tqStatus
                         {
 
                         }
-                        lastRun = DateTime.UtcNow;
+                        LastRun = DateTime.UtcNow;
                         _Running = false;
                     }
                     else
@@ -171,7 +211,7 @@ namespace tqStatus
             }
             catch (Exception ex)
             {
-                lastRun = DateTime.UtcNow;
+                LastRun = DateTime.UtcNow;
                 await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"{ex.Message}"));
                 _Running = false;
             }

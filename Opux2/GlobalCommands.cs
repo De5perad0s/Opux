@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Opux2
@@ -46,6 +47,37 @@ namespace Opux2
                 middle += $"```Name: {p.Name}, Version: {p.Version}```{Environment.NewLine}";
             }
             await ReplyAsync($"{start}{middle}");
+        }
+
+        [Command("plugin enable", RunMode = RunMode.Async), Summary("")]
+        [RequireOwner]
+        public async Task PluginEnable([Remainder]string x)
+        {
+            var result = await MySql.MysqlQuery($"UPDATE plugin_config SET enabled=1 WHERE name=\"{x}\"");
+
+            if (Convert.ToInt16(result[0].Keys.FirstOrDefault()) > 0)
+            {
+                await ReplyAsync($"{Context.User.Mention}, Plugin {x} Enabled");
+            }
+            else
+            {
+                await ReplyAsync($"{Context.User.Mention}, Cant find plugin, Check Plugin Name");
+            }
+        }
+
+        [Command("plugin disable", RunMode = RunMode.Async), Summary("")]
+        [RequireOwner]
+        public async Task PluginDisable([Remainder]string x)
+        {
+            var result = await MySql.MysqlQuery($"UPDATE plugin_config SET enabled=0 WHERE name=\"{x}\"");
+            if (Convert.ToInt16(result[0].Keys.FirstOrDefault()) > 0)
+            {
+                await ReplyAsync($"{Context.User.Mention}, Plugin {x} Disabled");
+            }
+            else
+            {
+                await ReplyAsync($"{Context.User.Mention}, Cant find plugin, Check Plugin Name");
+            }
         }
     }
 }

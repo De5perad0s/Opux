@@ -12,7 +12,10 @@ namespace eveTime
         [Command("time", RunMode = RunMode.Async), Summary("Returns the time in EVE")]
         public async Task Time()
         {
-            await ReplyAsync($"Time In EVE is Currently {DateTime.UtcNow}");
+            if (await Functions.CheckPluginEnabled(Name))
+            {
+                await ReplyAsync($"Time In EVE is Currently {DateTime.UtcNow}");
+            }
         }
 
         public string Name => "EveTime";
@@ -25,6 +28,11 @@ namespace eveTime
 
         public async Task OnLoad()
         {
+            if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM plugin_config WHERE name=\"{Name}\"")).Count == 0)
+            {
+                await Opux2.MySql.MysqlQuery($"INSERT INTO plugin_config (name, enabled) " +
+                    $"VALUES (\"{Name}\", 0)");
+            }
             await Base.Commands.AddModuleAsync(GetType());
             await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
         }

@@ -26,10 +26,11 @@ namespace Opux2
 
         internal static bool Quit { get; private set; }
         internal static bool MySqlAvaliable { get; set; }
+
         internal static LogSeverity LogLevel = default(LogSeverity);
         internal static Dictionary<string, IPlugin> _plugins;
 
-        static Timer _timer = new Timer(timerCallback, null, 500, 500);
+        static Timer _timer = new Timer(TimerCallback, null, 500, 500);
 
         static object ExitLock = new object();
         static ManualResetEventSlim ended = new ManualResetEventSlim();
@@ -109,6 +110,7 @@ namespace Opux2
 
                     Configuration = builder.Build();
                     await MySql.MySqlCheck();
+                    await Functions.MySqlSetup();
                 }
                 catch (Exception ex)
                 {
@@ -153,7 +155,7 @@ namespace Opux2
             }
         }
 
-        static void timerCallback(object state)
+        static void TimerCallback(object state)
         {
             Pulse().GetAwaiter();
         }
@@ -166,7 +168,8 @@ namespace Opux2
                 {
                     foreach (var p in Plugins)
                     {
-                        await p.Pulse().ConfigureAwait(false);
+                        if (await Functions.CheckPluginEnabled(p.Name))
+                            await p.Pulse().ConfigureAwait(false);
                     }
                 }
                 catch (Exception ex)

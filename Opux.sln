@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Opux2", "Opux2\Opux2.csproj", "{2AE02ABA-4E90-4F01-80C5-92EF8596FED5}"
 EndProject
@@ -15,7 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TQStatus", "TQStatus\TQStat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildEvents", "BuildEvents\BuildEvents.csproj", "{D429B50E-1A62-4E75-8BBF-C3A3E2536B16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FleetUp", "FleetUp\FleetUp.csproj", "{A6B03A15-FF22-4D22-B2B3-B37F6A4D3B1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FleetUp", "FleetUp\FleetUp.csproj", "{A6B03A15-FF22-4D22-B2B3-B37F6A4D3B1E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamSpeak", "TeamSpeak\TeamSpeak.csproj", "{DA8915E3-EA1B-4A29-8F3F-DC6FAA4B93E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillFeed", "KillFeed\KillFeed.csproj", "{4C026F50-CB57-4521-B303-1554257CEA8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,14 @@ Global
 		{A6B03A15-FF22-4D22-B2B3-B37F6A4D3B1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6B03A15-FF22-4D22-B2B3-B37F6A4D3B1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6B03A15-FF22-4D22-B2B3-B37F6A4D3B1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA8915E3-EA1B-4A29-8F3F-DC6FAA4B93E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA8915E3-EA1B-4A29-8F3F-DC6FAA4B93E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA8915E3-EA1B-4A29-8F3F-DC6FAA4B93E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA8915E3-EA1B-4A29-8F3F-DC6FAA4B93E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C026F50-CB57-4521-B303-1554257CEA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C026F50-CB57-4521-B303-1554257CEA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C026F50-CB57-4521-B303-1554257CEA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C026F50-CB57-4521-B303-1554257CEA8A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

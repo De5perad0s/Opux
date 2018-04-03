@@ -26,18 +26,26 @@ namespace Opux2
 
                         using (MySqlDataReader reader = cmd.ExecuteReader())
                         {
+                            if (reader.VisibleFieldCount > 0)
+                            {
+                                while (reader.Read())
+                                {
+                                    var record = new Dictionary<string, object>();
 
-                            while (reader.Read())
+                                    for (var i = 0; i < reader.FieldCount; i++)
+                                    {
+                                        var key = reader.GetName(i);
+                                        var value = reader[i];
+                                        record.Add(key, value);
+                                    }
+
+                                    list.Add(record);
+                                }
+                            }
+                            else
                             {
                                 var record = new Dictionary<string, object>();
-
-                                for (var i = 0; i < reader.FieldCount; i++)
-                                {
-                                    var key = reader.GetName(i);
-                                    var value = reader[i];
-                                    record.Add(key, value);
-                                }
-
+                                record.Add($"{reader.RecordsAffected}", null);
                                 list.Add(record);
                             }
 
