@@ -1,12 +1,12 @@
 {
-  "token": "",
+  "token": "NDI0MjgyODY1OTA4NTgwMzcz.DbfKTg.E9PoLMwslOwZkQMU3s4sxxZn8NQ",
   "guildid": 424279782365331456,
   "channelid": 424280437834383362,
   "trigger": "!",
   "LogLevel": 3,
   "debugger": false,
   "MySqlConfig": {
-    "hostname": "localhost",
+    "hostname": "192.168.1.105",
     "port": "3306",
     "username": "test",
     "password": "test",

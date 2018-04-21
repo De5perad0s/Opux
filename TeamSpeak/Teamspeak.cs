@@ -65,6 +65,13 @@ namespace teamspeak
                 {
                     MySqlExists = true;
                     _Running = false;
+
+                    if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM plugin_config WHERE name=\"{Name}\"")).Count == 0)
+                    {
+                        await Opux2.MySql.MysqlQuery($"INSERT INTO plugin_config (name, enabled) " +
+                            $"VALUES (\"{Name}\", 0)");
+                    }
+
                     await Base.Commands.AddModuleAsync(GetType());
                     await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
                 }

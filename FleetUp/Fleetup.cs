@@ -1,10 +1,12 @@
 ﻿using Discord;
 using Discord.Commands;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Opux2;
 using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static FleetUp.FleetupJsonClasses;
 
 namespace FleetUp
 {
@@ -143,10 +145,37 @@ namespace FleetUp
             await ReplyAsync($"{Context.User.Mention}, Use 1 or 0 to enable or disable fleetup");
         }
 
+        [Command("ops", RunMode = RunMode.Async), Summary("")]
+        public async Task Ops()
+        {
+            await GetCurrentOps();
+        }
+
+        private async Task GetCurrentOps()
+        {
+            var apis = await Opux2.MySql.MysqlQuery($"SELECT * FROM {table} WHERE guildid = {Context.Guild.Id}");
+            if (apis.Count > 0)
+            {
+                foreach (var api in apis)
+                {
+                    var url = $"http://api.fleet-up.com/Api.svc/Ohigwbylcsuz56ue3O6Awlw5e/{api["UserId"]}/{api["APICode"]}/Operations/{api["GroupID"]}";
+
+                    var ops = await Base._httpClient.GetStringAsync(url);
+
+                    var Result = JsonConvert.DeserializeObject<Result>(ops);
+
+                    Embed _return = new EmbedBuilder().Build();
+                    //return _return;
+                }
+            }
+            await Task.CompletedTask;
+        }
+
         static IConfiguration Configuration { get; set; }
-        static bool MySqlExists { get; set; }
         static DateTime _lastRun { get; set; }
         static bool _Running { get; set; }
+
+        static bool MySqlExists { get; set; }
         static string table = "fleetup";
 
         public bool Configured { get; private set; }

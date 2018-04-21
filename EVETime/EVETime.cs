@@ -28,13 +28,21 @@ namespace eveTime
 
         public async Task OnLoad()
         {
-            if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM plugin_config WHERE name=\"{Name}\"")).Count == 0)
+            try
             {
-                await Opux2.MySql.MysqlQuery($"INSERT INTO plugin_config (name, enabled) " +
-                    $"VALUES (\"{Name}\", 0)");
+                if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM plugin_config WHERE name=\"{Name}\"")).Count == 0)
+                {
+                    await Opux2.MySql.MysqlQuery($"INSERT INTO plugin_config (name, enabled) " +
+                        $"VALUES (\"{Name}\", 0)");
+                }
+
+                await Base.Commands.AddModuleAsync(GetType());
+                await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
             }
-            await Base.Commands.AddModuleAsync(GetType());
-            await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
+            catch (Exception ex)
+            {
+                await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, Name, $"{Name} Failed to Load {ex.Message}", ex));
+            }
         }
 
         public async Task Pulse()

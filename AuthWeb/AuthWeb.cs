@@ -74,7 +74,7 @@ namespace authWeb
 
             if (listener == null || !listener.IsListening)
             {
-                var port = (int)Configuration.GetValue(typeof(int), "port");
+                var port = 8090;
                 await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, "Starting AuthWeb Server"));
                 listener = new HttpListener(IPAddress.Any, port);
 

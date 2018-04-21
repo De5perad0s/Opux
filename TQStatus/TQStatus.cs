@@ -27,30 +27,33 @@ namespace tqStatus
         [Command("status", RunMode = RunMode.Async), Summary("Gets and displays the status of the EVE server")]
         public async Task Status()
         {
-            var result = await status.GetStatusAsyncWithHttpInfo();
-
-            if (result.StatusCode == 200)
+            if (await Functions.CheckPluginEnabled($"{Name}"))
             {
-                var Players = result.Data.Players;
-                var ServerVersion = result.Data.ServerVersion;
-                var StartTime = result.Data.StartTime;
+                var result = await status.GetStatusAsyncWithHttpInfo();
 
-                var builder = new EmbedBuilder()
-                    .WithColor(new Color(0x00D000))
-                    .WithAuthor(author =>
-                    {
-                        author
-                            .WithName($"EVE Online Server Status");
-                    })
-                    .AddInlineField("Players Online:", $"{Players}")
-                    .AddInlineField("Version", $"{ServerVersion}")
-                    .AddInlineField("StartTime", $"{StartTime}");
+                if (result.StatusCode == 200)
+                {
+                    var Players = result.Data.Players;
+                    var ServerVersion = result.Data.ServerVersion;
+                    var StartTime = result.Data.StartTime;
 
-                builder.WithTimestamp(DateTime.UtcNow);
+                    var builder = new EmbedBuilder()
+                        .WithColor(new Color(0x00D000))
+                        .WithAuthor(author =>
+                        {
+                            author
+                                .WithName($"EVE Online Server Status");
+                        })
+                        .AddInlineField("Players Online:", $"{Players}")
+                        .AddInlineField("Version", $"{ServerVersion}")
+                        .AddInlineField("StartTime", $"{StartTime}");
 
-                var embed = builder.Build();
+                    builder.WithTimestamp(DateTime.UtcNow);
 
-                await ReplyAsync($"", false, embed).ConfigureAwait(false);
+                    var embed = builder.Build();
+
+                    await ReplyAsync($"", false, embed).ConfigureAwait(false);
+                }
             }
         }
 
@@ -77,6 +80,13 @@ namespace tqStatus
                     Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, "Table Created")).Wait();
                     MySqlExists = true;
                     _Running = false;
+
+                    if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM plugin_config WHERE name=\"{Name}\"")).Count == 0)
+                    {
+                        await Opux2.MySql.MysqlQuery($"INSERT INTO plugin_config (name, enabled) " +
+                            $"VALUES (\"{Name}\", 0)");
+                    }
+
                     await Base.Commands.AddModuleAsync(GetType());
                     await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
                 }

@@ -79,5 +79,20 @@ namespace Opux2
                 await ReplyAsync($"{Context.User.Mention}, Cant find plugin, Check Plugin Name");
             }
         }
+
+        [Command("plugin list", RunMode = RunMode.Async), Summary("")]
+        [RequireOwner]
+        public async Task PluginList()
+        {
+            var result = await MySql.MysqlQuery($"SELECT * FROM plugin_config");
+
+            if (result.Count > 0)
+            {
+                foreach (var plugin in result)
+                {
+                    await ReplyAsync($"{plugin["name"]}");
+                }
+            }
+        }
     }
 }

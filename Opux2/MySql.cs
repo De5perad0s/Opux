@@ -83,6 +83,15 @@ namespace Opux2
                 catch (MySqlException ex)
                 {
                     await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config", ex));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "MySql Query Disabled check your MySql Config"));
+                    await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "MySqlHelpers", "Waiting 5 Seconds before Exiting", ex));
+                    await Task.Delay(5000);
                 }
             }
 
