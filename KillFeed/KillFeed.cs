@@ -39,7 +39,9 @@ namespace killFeed
                     Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Creating {table} Table in MySql Database")).Wait();
 
                     var result = await Opux2.MySql.MysqlQuery($"CREATE TABLE {table} (id int(6) NOT NULL AUTO_INCREMENT, channelid bigint(20) unsigned NOT NULL, " +
-                        "guildid bigint(20) unsigned NOT NULL, groupid bigint(20) unsigned NOT NULL, mediumint(9) NOT NULL, alliance tinyint(4) NOT NULL, PRIMARY KEY (id), UNIQUE KEY (GroupID) ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+                        "GuildID bigint(20) unsigned NOT NULL, GroupID bigint(20) unsigned NOT NULL, minValue bigint(20) NOT NULL, minLossValue bigint(20) NOT NULL, " +
+                        "BigKillValue bigint(20) NOT NULL, BigKillChannel bigint(20) NOT NULL, alliance tinyint(4) NOT NULL, enabled tinyint(4) NOT NULL, PRIMARY KEY (id), " +
+                        "UNIQUE KEY (GroupID) ) ENGINE=InnoDB DEFAULT CHARSET=latin1");
 
                     if ((await Opux2.MySql.MysqlQuery($"SELECT * FROM {table} LIMIT 1")) != null)
                     {
@@ -73,6 +75,11 @@ namespace killFeed
             {
                 await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, Name, $"{Name} Failed to Load {ex.Message}", ex));
             }
+        }
+
+        public Task UnLoad()
+        {
+            return null;
         }
 
         public async Task Pulse()

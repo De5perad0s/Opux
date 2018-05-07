@@ -82,6 +82,11 @@ namespace teamspeak
             }
         }
 
+        public Task UnLoad()
+        {
+            return null;
+        }
+
         public async Task Pulse()
         {
             await Task.CompletedTask;

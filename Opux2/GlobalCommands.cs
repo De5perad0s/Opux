@@ -1,5 +1,8 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -50,7 +53,7 @@ namespace Opux2
         }
 
         [Command("plugin enable", RunMode = RunMode.Async), Summary("")]
-        [RequireOwner]
+        [RequireRole("Admin")]
         public async Task PluginEnable([Remainder]string x)
         {
             var result = await MySql.MysqlQuery($"UPDATE plugin_config SET enabled=1 WHERE name=\"{x}\"");
@@ -72,6 +75,7 @@ namespace Opux2
             var result = await MySql.MysqlQuery($"UPDATE plugin_config SET enabled=0 WHERE name=\"{x}\"");
             if (Convert.ToInt16(result[0].Keys.FirstOrDefault()) > 0)
             {
+                await Base.Plugins.FirstOrDefault(p => p.Name == x).UnLoad();
                 await ReplyAsync($"{Context.User.Mention}, Plugin {x} Disabled");
             }
             else
@@ -93,6 +97,43 @@ namespace Opux2
                     await ReplyAsync($"{plugin["name"]}");
                 }
             }
+        }
+    }
+
+    public class RequireRoleAttribute : RequireContextAttribute
+    {
+        private ulong[] _roleIds;
+        private string[] _roleNames;
+
+        ///// <summary> Requires that the command caller has ANY of the supplied role ids. </summary>
+        //public RequireRoleAttribute(params ulong[] roleIds) : base(ContextType.Guild)
+        //    => _roleIds = roleIds;
+        ///// <summary> Requires that the command caller has ANY of the supplied role names. </summary>
+        //public RequireRoleAttribute(params string[] roleNames) : base(ContextType.Guild)
+        //    => _roleNames = roleNames;
+
+        public RequireRoleAttribute(params ulong[] roleIds) : base(ContextType.Guild)
+        {
+            _roleIds = roleIds;
+        }
+
+        public RequireRoleAttribute(params string[] roleNames) : base(ContextType.Guild)
+        {
+            _roleNames = roleNames;
+        }
+
+        public override Task<PreconditionResult> CheckPermissions(ICommandContext context, CommandInfo command, IServiceProvider services)
+        {
+            var allowedRoleIds = new List<ulong>();
+
+            if (_roleIds != null)
+                allowedRoleIds.AddRange(_roleIds);
+            if (_roleNames != null)
+                allowedRoleIds.AddRange(context.Guild.Roles.Where(x => _roleNames.Contains(x.Name)).Select(x => x.Id));
+
+            return (context.User as IGuildUser).RoleIds.Intersect(allowedRoleIds).Any()
+            ? Task.FromResult(PreconditionResult.FromSuccess())
+            : Task.FromResult(PreconditionResult.FromError("You do not have a role required to execute this command."));
         }
     }
 }

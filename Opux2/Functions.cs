@@ -1,7 +1,11 @@
 ﻿using Discord;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Threading.Tasks;
+using HttpListener = System.Net.Http.HttpListener;
 
 namespace Opux2
 {
@@ -67,6 +71,38 @@ namespace Opux2
                 }
             }
             return false;
+        }
+
+        public static async Task<bool> EnableListener()
+        {
+            try
+            {
+                if (Base._httpListener == null)
+                {
+                    Base._httpListener = new HttpListener(IPAddress.Any, 8080);
+                }
+
+                if (Base._httpListener != null && !Base._httpListener.IsListening)
+                {
+                    Base._httpListener.Start();
+                }
+
+                if (Base._httpListener != null && Base._httpListener.IsListening)
+                {
+                    await Task.CompletedTask;
+                    return true;
+                }
+                else
+                {
+                    await Task.CompletedTask;
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, "httpListener", $"httpListener Error {ex.Message}", ex));
+                return false;
+            }
         }
     }
 }

@@ -85,6 +85,11 @@ namespace priceChecks
             }
         }
 
+        public Task UnLoad()
+        {
+            return null;
+        }
+
         public Task Pulse()
         {
             return Task.CompletedTask;

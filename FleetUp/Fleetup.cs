@@ -135,7 +135,7 @@ namespace FleetUp
         [RequireOwner]
         public async Task Active([Remainder] string x)
         {
-
+            await Task.CompletedTask;
         }
 
         [Command("active", RunMode = RunMode.Async), Summary("Add's a fleetup API")]
@@ -231,6 +231,11 @@ namespace FleetUp
                 await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Error, Name, $"{Name} Failed to Load {ex.Message}", ex));
             }
         }
+        public Task UnLoad()
+        {
+            return null;
+        }
+
 
         public async Task Pulse()
         {

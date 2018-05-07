@@ -106,6 +106,11 @@ namespace tqStatus
             await Logger.DiscordClient_Log(new LogMessage(LogSeverity.Info, Name, $"Loaded Plugin {Name}"));
         }
 
+        public Task UnLoad()
+        {
+            return null;
+        }
+
         public async Task Pulse()
         {
             try

@@ -23,8 +23,9 @@ namespace Opux2
         public static ICollection<IPlugin> Plugins { get; set; }
         public static IServiceProvider ServiceCollection { get; private set; }
         public static readonly HttpClient _httpClient = new HttpClient();
+        public static HttpListener _httpListener;
 
-        internal static bool Quit { get; private set; }
+        internal static bool Quit { get; set; }
         internal static bool MySqlAvaliable { get; set; }
 
         internal static LogSeverity LogLevel = default(LogSeverity);
@@ -166,6 +167,10 @@ namespace Opux2
             {
                 try
                 {
+                    if (Quit)
+                    {
+                        Monitor.TryEnter(ExitLock);
+                    }
                     foreach (var p in Plugins)
                     {
                         if (await Functions.CheckPluginEnabled(p.Name))

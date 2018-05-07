@@ -10,6 +10,7 @@ namespace Opux2
         string Author { get; }
         Version Version { get; }
         Task OnLoad();
+        Task UnLoad();
         Task Pulse();
     }
 }

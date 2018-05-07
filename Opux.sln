@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FleetUp", "FleetUp\FleetUp.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamSpeak", "TeamSpeak\TeamSpeak.csproj", "{DA8915E3-EA1B-4A29-8F3F-DC6FAA4B93E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KillFeed", "KillFeed\KillFeed.csproj", "{4C026F50-CB57-4521-B303-1554257CEA8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KillFeed", "KillFeed\KillFeed.csproj", "{4C026F50-CB57-4521-B303-1554257CEA8A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notifications", "Notifications\Notifications.csproj", "{F5DA2D6E-79F7-4D0B-97DC-D109B4DFF5CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{4C026F50-CB57-4521-B303-1554257CEA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C026F50-CB57-4521-B303-1554257CEA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C026F50-CB57-4521-B303-1554257CEA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5DA2D6E-79F7-4D0B-97DC-D109B4DFF5CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5DA2D6E-79F7-4D0B-97DC-D109B4DFF5CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5DA2D6E-79F7-4D0B-97DC-D109B4DFF5CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5DA2D6E-79F7-4D0B-97DC-D109B4DFF5CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
